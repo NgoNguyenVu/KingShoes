@@ -1,0 +1,28 @@
+﻿@using System.Web.Optimization
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="~/images/title.png">
+    <title>King Shoes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/bootstrap")
+
+</head>
+<body>
+    @Html.Partial("NavPartial")
+
+
+
+    <div>
+        @RenderBody()
+    </div>
+    @Html.Partial("VoucherPartial")
+    @Html.Partial("FooterPartial")
+
+
+</body>
+</html>

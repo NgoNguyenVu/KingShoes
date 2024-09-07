@@ -1,0 +1,220 @@
+﻿@model List<WebsiteGiayKingShoes.Models.WishList>
+@{
+    ViewBag.Title = "WishList";
+    Layout = "~/Views/Shared/LayoutUser.cshtml";
+}
+
+<style>
+    .WishList-cart {
+        width: 750px;
+        max-height: 600px; /* Set a maximum height */
+        overflow: auto; /* Add a scrollbar if the content overflows */
+        margin: 80px auto;
+        margin-top: 140px;
+        background: #FFFFFF;
+        box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.10);
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+    }
+
+        .WishList-cart::-webkit-scrollbar {
+            width: 8px; /* Set the width of the scrollbar */
+        }
+
+        .WishList-cart::-webkit-scrollbar-thumb {
+            background-color: #8D93A5; /* Set the color of the scrollbar thumb */
+            border-radius: 4px; /* Optional: add rounded corners to the thumb */
+        }
+
+        .WishList-cart::-webkit-scrollbar-track {
+            background-color: #F2F2F2; /* Set the color of the scrollbar track */
+            border-radius: 6px; /* Optional: add rounded corners to the track */
+        }
+
+
+    .wish-cart {
+        height: 60px;
+        border-bottom: 1px solid #E1E8EE;
+        padding: 20px 30px;
+        color: #5E6977;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .item-wish {
+        padding: 15px 30px;
+        height: 120px;
+        display: flex;
+        border-top: 1px solid #E1E8EE
+    }
+
+    .buttons-wish {
+        position: relative;
+        padding-top: 54px;
+    }
+
+    .delete-wish {
+        font-size: 2.5rem;
+        color: #333; /* Màu của icon khi không hover */
+        transition: color 0.3s ease; /* Hiệu ứng chuyển đổi màu trong 0.3 giây */
+    }
+
+        .delete-wish:hover {
+            color: red; /* Màu của icon khi hover */
+        }
+
+    .product-link {
+        text-decoration: none; /* Loại bỏ đường gạch chân mặc định của liên kết */
+        color: inherit; /* Kế thừa màu chữ từ phần tử cha (tránh việc mất màu chữ khi hover) */
+        display: flex;
+        align-items: center;
+    }
+    .image-wish {
+        margin-left: 25px;
+        flex-wrap: wrap;
+    }
+
+        .image-wish img {
+            max-width: 100px; /* Set the maximum width of the image */
+            height: auto; /* Maintain the aspect ratio of the image */
+        }
+
+    .name-wish {
+        margin-left: 30px;
+        width: 115px;
+    }
+
+        .name-wish span {
+            display: block;
+            font-size: 14px;
+            color: #43484D;
+            font-weight: 400;
+        }
+
+            .name-wish span:first-child {
+                margin-bottom: 5px;
+            }
+
+            .name-wish span:last-child {
+                font-weight: 300;
+                margin-top: 8px;
+                color: #86939E;
+            }
+
+    .status-wish {
+        padding-top: 42px;
+        margin-left: 40px;
+    }
+
+
+    .item-status {
+        text-align: center;
+        font-size: 16px;
+        color: #43484D;
+        font-weight: 300;
+        margin-left: 35px;
+    }
+
+    .wish-line {
+        padding: 15px 30px;
+        display: flex;
+    }
+
+    .price-wish {
+        padding-top: 42px;
+        margin-left: 55px;
+        font-size: 15px;
+    }
+
+    .btn-wish {
+        padding-top: 42px;
+        margin-left: 70px;
+    }
+    .btn-wish a {
+        text-decoration: none; /* Remove underline from the link */
+        color: #000; /* Set the color of the icon */
+        display: flex;
+        align-items: center; /* Center the icon vertically */
+   
+    }
+
+    .btn-wish i {
+        font-size: 24px; /* Adjust the font size of the icon */
+    }
+    .wish-line{
+        font-size: 16px;
+    }
+    .line-name{
+        margin-left: 175px;
+    }
+    .line-price {
+        margin-left: 100px;
+    }
+    .line-status {
+        margin-left: 125px;
+    }
+</style>
+
+<div class="WishList-cart">
+    <!-- Title -->
+    <div class="wish-cart">
+        My WishList    
+    </div>
+
+    <div class="wish-line">
+        <div class="line-name">
+            <span>Product Name</span>
+        </div>
+        <div class="line-price">
+            <span>Price</span>
+        </div>
+        <div class="line-status">
+            <span>Status</span>
+        </div>
+      
+    </div>
+
+    <!-- Product #1 -->
+    @foreach (var item in Model)
+    {
+        <div class="item-wish">
+            <div class="buttons-wish">
+                <span>
+                    @Html.ActionLink("✖", "RemoveWish", new { @iMaSP = item.iMaSP }, new { @class = "delete-wish" })
+                </span>
+
+            </div>
+            <a href="@Url.Action("ProductDetail","Home", new { id = item.iMaSP})" class="product-link">
+                <div class="image-wish">
+                    <img src="~/images/SanPham/@Path.GetFileName(item.sAnhBia)" alt="" />
+                </div>
+
+                <div class="name-wish">
+                    <span><strong>@item.sTenSP</strong></span>
+                </div>
+            </a>
+                <div class="price-wish">
+                    <span> @string.Format("{0:#,##0,0}", @item.dDonGia) VND</span>
+                </div>
+
+                <div class="status-wish">
+                    <div class="item-status">
+                        <span>@item.sTenTrangThai</span>
+                    </div>
+                </div>
+           
+
+                <a href="@Url.Action("MoveToCart", "WishList", new { ms = item.iMaSP })" class="btn-wish">
+                      <i class="fa fa-cart-plus"></i>
+                </a>
+
+        </div>
+    }
+
+
+    <hr />
+
+ 
+</div>

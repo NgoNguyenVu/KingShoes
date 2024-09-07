@@ -1,0 +1,52 @@
+﻿@using WebsiteGiayKingShoes.Models;
+@{
+    ViewBag.Title = "Trang Chủ Admin";
+    Layout = "~/Areas/Admin/Views/Shared/LayoutAdmin.cshtml";
+    User kh = (User)Session["TaiKhoan"];
+}
+
+
+<div class="admin-dashboard">
+    <div class="welcome-section">
+        <h2>Chào mừng đến Trang Quản trị của KINGSHOES!</h2>
+        <p>Xin chào, @kh.HoTen! Bạn đã đăng nhập vào trang quản trị.</p>
+    </div>
+
+    <img src="https://kingshoes.vn/data/upload/media/cửa-hàng-giày-sneaker-chính-hàng-uy-tín-nhất-dến-king-shoes-authenti-hcm-6.png" alt="Cửa Hàng Giày Sneaker Chính Hãng Tại TpHcm - KING SHOES" style="width: 100%; height: auto;">
+
+</div>
+
+<style>
+    .admin-dashboard {
+        padding: 20px;
+    }
+
+    .welcome-section {
+        background-color: #f0f0f0;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .admin-widgets {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .widget {
+        width: 48%;
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    h2 {
+        color: #333;
+    }
+
+    h3 {
+        color: #555;
+    }
+</style>

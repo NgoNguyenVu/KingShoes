@@ -1,0 +1,148 @@
+﻿@model WebsiteGiayKingShoes.Models.User
+
+@{
+    ViewBag.Title = "Account";
+    Layout = "~/Views/Shared/LayoutUser.cshtml";
+}
+
+<div class="account-page">
+    <div class="container">
+        <div class="">
+            <div class="col-2">
+                <div class="form-container">
+
+                    <div class="form-btn">
+                        <span onclick="register()">Đăng ký</span>
+                        <span onclick="login()">Đăng nhập</span>
+                        <hr id="Indicator">
+                    </div>
+                    <h4 style="color: red; text-align:center">@ViewBag.ThongBao</h4>
+
+                    @using (Html.BeginForm("Login", "User", FormMethod.Post, new { id = "loginform" }))
+                    {
+                        @Html.ValidationSummary(true)
+
+                        if (Request.Cookies["TenDN"] != null && Request.Cookies["MatKhau"] != null)
+                        {
+
+                            @Html.TextBox("TenDN", Request.Cookies["TenDN"].Value)
+                            @ViewData["Err1"]
+
+                            @Html.Password("MatKhau", Request.Cookies["MatKhau"].Value)
+                            @ViewData["Err2"]
+
+                        }
+                        else
+                        {
+                            @Html.TextBox("TenDN", null, new { placeholder = "Tài khoản" })
+                            @ViewData["Err1"]
+
+                            @Html.Password("MatKhau", null, new { placeholder = "Mật khẩu" })
+                            @ViewData["Err2"]
+                        }
+
+
+                        <div class="custom-checkbox">
+                            @Html.CheckBox("remember", new { id = "remember" })
+                            <label for="remember" style="font-style: italic;">Nhớ thông tin đăng nhập</label>
+                        </div>
+
+                        <div class="g-recaptcha" data-sitekey="6LcHfuEpAAAAANSKA_ie7jR-_4KtqWdSJ5I4QIew"></div>
+
+                        <input type="hidden" name="url" value="@ViewBag.url" />
+                        <button type="submit" class="btn">Đăng nhập</button>
+
+                        <a href="@Url.Action("ForgotPassword", "User")">Quên mật khẩu?</a>
+
+                        <div class="social-buttons">
+                            <a href="@Url.Action("FacebookLogin", "User")">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </a>
+
+                            <a href="@Url.Action("ExternalLogin", "User")">
+                                <i class="fab fa-google"></i> Google
+                            </a>
+                        </div>
+                        <style>
+                            .g-recaptcha {
+                                display: flex;
+                                justify-content: center;
+                                margin: 20px 0; /* Khoảng cách trên và dưới cho reCAPTCHA */
+                            }
+                            .social-buttons {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                width: 200px; /* Điều chỉnh độ rộng theo nhu cầu của bạn */
+                                margin: 20px auto; /* Điều chỉnh lề theo nhu cầu của bạn */
+                            }
+
+                                .social-buttons a {
+                                    text-decoration: none;
+                                    color: #fff; /* Màu chữ theo nhu cầu của bạn */
+                                    background-color: #007bff; /* Màu nền theo nhu cầu của bạn */
+                                    padding: 10px;
+                                    border-radius: 5px;
+                                    display: flex;
+                                    align-items: center;
+                                }
+
+                                .social-buttons i {
+                                    margin-right: 10px;
+                                }
+                                /* Thêm margin giữa hai nút */
+                                .social-buttons a + a {
+                                    margin-left: 10px;
+                                }
+
+                        </style>
+
+                    }
+
+
+                    @using (Html.BeginForm("Register", "User", FormMethod.Post, new { id = "regform" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.HoTen, new { htmlAttributes = new { @class = "form-control", placeholder = "Nhập họ tên" } })
+                        @Html.ValidationMessageFor(model => model.HoTen, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.TaiKhoan, new { htmlAttributes = new { @class = "form-control", placeholder = "Tài khoản" } })
+                        @Html.ValidationMessageFor(model => model.TaiKhoan, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.MatKhau, new { htmlAttributes = new { @class = "form-control", placeholder = "Mật khẩu" } })
+                        @Html.ValidationMessageFor(model => model.MatKhau, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.MatKhauNL, new { htmlAttributes = new { @class = "form-control", placeholder = "Nhập lại mật khẩu" } })
+                        @Html.ValidationMessageFor(model => model.MatKhauNL, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "Email" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.DiaChi, new { htmlAttributes = new { @class = "form-control", placeholder = "Địa chỉ" } })
+                        @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.DienThoai, new { htmlAttributes = new { @class = "form-control", placeholder = "Điện thoại" } })
+                        @Html.ValidationMessageFor(model => model.DienThoai, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.NgaySinh, new { htmlAttributes = new { @class = "form-control", placeholder = "Ngày sinh" } })
+                        @Html.ValidationMessageFor(model => model.NgaySinh, "", new { @class = "text-danger" })
+
+
+                        <button type="submit" class="btn">Đăng ký</button>
+
+                    }
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>

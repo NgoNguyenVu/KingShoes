@@ -1,0 +1,380 @@
+﻿@model IEnumerable<WebsiteGiayKingShoes.Models.DONDATHANG>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/LayoutAdmin.cshtml";
+}
+
+
+
+
+<style>
+    /* Áp dụng margin-bottom cho tất cả các input trừ input cuối cùng */
+    .form-control {
+        margin-bottom: 10px;
+    }
+
+        /* Không áp dụng margin-bottom cho input cuối cùng */
+        .form-control:last-child {
+            margin-bottom: 0;
+        }
+</style>
+
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle"></h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="maDH" value="" hidden />
+                <label>Mã Đơn Hàng</label>
+                <input type="text" class="form-control" id="txtMaDH" placeholder="Mã Đơn Hàng" />
+                <label>Tình Trạng Thanh Toán</label>
+                <select class="form-control" id="selTTTT" placeholder="Tình Trạng Thanh Toán">
+                    <option value="0">Chưa thanh toán</option>
+                    <option value="1">Đã thanh toán</option>
+                </select>
+                <label>Tình Trạng Giao Hàng</label>
+                <select class="form-control" id="selTTGH" placeholder="Tình Trạng Giao Hàng">
+                    <option value="0">Đang xử lí</option>
+                    <option value="1">Đã xác nhận</option>
+                </select>
+                <label>Ngày Đặt</label>
+                <input type="text" class="form-control" id="txtDat" placeholder="Ngày Đặt" />
+                <label>Ngày Giao</label>
+                <input type="text" class="form-control" id="txtGiao" placeholder="Ngày Giao" />
+                <label>Mã Khách Hàng</label>
+                <input type="text" class="form-control" id="txtMaKH" placeholder="Mã User" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSubmit">Lưu</button>
+                <button type="button" class="btn btn-primary" id="close-btn" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="bg-light text-center rounded p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h6 class="mb-0">Quản lý đơn hàng</h6>
+        @* <button class="btn btn-success" id="btnAdd"><i class="fa fa-plus" aria-hiden="true"></i> Thêm mới</button>*@
+    </div>
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>
+                        Mã đơn hàng
+                    </th>
+                    <th>
+                        Tình trạng thanh toán
+                    </th>
+                    <th>
+                        Tình trạng giao hàng
+                    </th>
+                    <th>
+                        Ngày đặt
+                    </th>
+
+                    <th>
+                        Ngày giao
+                    </th>
+                    <th>
+                        Mã khách hàng
+                    </th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaDonHang)
+                        </td>
+                        <td>
+                            @{
+                                if (item.DaThanhToan == false)
+                                {
+                                    <span>Chưa thanh toán</span>
+                                }
+                                else
+                                {
+                                    <span>Đã thanh toán</span>
+                                }
+
+                            }
+
+                        <td>
+                            @{
+                                if (item.TinhTrangGiaoHang == 0)
+                                {
+                                    <span>Đang xử lí</span>
+                                }
+                                else if (item.TinhTrangGiaoHang == 1)
+                                {
+                                    <span>Đã xác nhận</span>
+                                }
+
+                            }
+                        </td>
+                        <td>
+                  
+                            @string.Format("{0:dd/MM/yyyy}", item.NgayDat)
+                        </td>
+                        <td>
+                            @string.Format("{0:dd/MM/yyyy}", item.NgayGiao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaUser)
+                        </td>
+
+
+
+                        <td>
+                            <button class="btn btn-sm btn-info view-btn" data-id="@item.MaDonHang">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning update-btn" data-id="@item.MaDonHang">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="@item.MaDonHang">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+
+@section script {
+    <script>
+
+        $(document).ready(function () {
+            $("#close-btn").click(function () {
+                $("#viewModal").modal("hide");
+            });
+
+            $(".view-btn").click(function () {
+                let idDH = $(this).data("id");
+                $.ajax({
+                    url: '/Admin/ManaOrder/Detail',
+                    type: 'get',
+                    data: { maDH: idDH },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $('#txtMaDH').val(data.dh.MaDonHang);
+                            $('#txtMaDH').prop('readonly', true);
+
+                            $('#selTTTT').val(data.dh.tttt ? '1' : '0');
+                            $('#selTTTT').prop('readonly', true);
+
+                            $('#selTTGH').val(data.dh.TinhTrangGiaoHang.toString()); // Convert to string
+                            $('#selTTGH').prop('readonly', true);
+
+                            $('#txtDat').val(formatDate(data.dh.NgayDat));
+                            $('#txtGiao').val(formatDate(data.dh.NgayGiao));
+
+                            // Disable the input fields
+                            $('#txtDat').prop('readonly', true);
+                            $('#txtGiao').prop('readonly', true);
+
+                            $('#txtMaKH').val(data.dh.MaUser);
+                            $('#txtMaKH').prop('readonly', true);
+
+                            $('#modalTitle').text('Xem chi tiết đơn đặt hàng');
+                            $('#btnSubmit').hide();
+                            $('#viewModal').modal('show');
+                        } else {
+                            alert(data.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while fetching data.');
+                    }
+                });
+            });
+
+            function formatDate(timestamp) {
+                // Create a new Date object
+                var date = new Date(parseInt(timestamp.substr(6)));
+
+                // Get the day, month, and year
+                var day = date.getDate();
+                var month = date.getMonth() + 1; // Months are zero-based
+                var year = date.getFullYear();
+
+                // Format the date as DD/MM/YYYY
+                var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+
+                return formattedDate;
+            }
+
+            $(".update-btn").click(function () {
+                let idDH = $(this).data("id");
+                $.ajax({
+                    url: '/Admin/ManaOrder/Detail',
+                    type: 'get',
+                    data: { maDH: idDH },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $('#txtMaDH').val(data.dh.MaDonHang);
+
+                            $('#selTTTT').val(data.dh.tttt ? '1' : '0');
+
+                    
+                            $('#selTTGH').val(data.dh.TinhTrangGiaoHang.toString()); 
+
+
+                            $('#txtDat').val(formatDate(data.dh.NgayDat));
+                            $('#txtGiao').val(formatDate(data.dh.NgayGiao));
+
+                            $('#txtMaKH').val(data.dh.MaUser);
+
+                            $('#modalTitle').text('Cập Nhập Đơn Đặt Hàng');
+                            $('#btnSubmit').show();
+                            $('#maDH').val(idDH);
+                            $('#viewModal').modal('show');
+                        } else {
+                            alert(data.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while fetching data.');
+                    }
+                });
+            });
+
+
+            $(".delete-btn").click(function () {
+                let idDH = $(this).data("id");
+                if (confirm('Bạn có thực sự muốn xóa')) {
+
+
+                    $.ajax({
+                        url: '/Admin/ManaOrder/Delete',
+                        type: 'post',
+                        data: {
+                            maDH: idDH
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                window.location.reload();
+                            }
+                            else {
+                                alert(data.msg);
+                            }
+
+                        }
+                    })
+                }
+            });
+
+
+            $('#btnSubmit').click(function () {
+                let maDH = $('#maDH').val();
+                let strtttt = $('#selTTTT').val();
+                let strttgh = $('#selTTGH').val();
+                let strdat = $('#txtDat').val();
+                let strgiao = $('#txtGiao').val();
+                let strmakh = $('#txtMaKH').val();
+
+         
+
+                if (maDH == 0) {
+                    // Thêm tin tức mới
+                    $.ajax({
+                        url: '/Admin/ManaOrder/Add',
+                        type: 'POST',
+                        data: {
+                            tttt: strtttt,
+                            ttgh: strttgh,
+                            nd: strdat,
+                            ng: strgiao,
+                            makh: strmakh
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                $('#selTTTT').val('');
+                                $('#selTTGH').val('');
+                                $('#txtDat').val('');
+                                $('#txtGiao').val('');
+                                $('#txtMaKH').val('');
+                                $('#viewModal').modal('hide');
+
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert('Error occurred while adding news: ' + errorThrown);
+                        }
+                    });
+                } else {
+                    // Cập nhật tin tức
+                    $.ajax({
+                        url: '/Admin/ManaOrder/Update',
+                        type: 'POST',
+                        data: {
+                            maDH: maDH,
+                            tttt: strtttt === 'true', // Convert to boolean if needed
+                            ttgh: parseInt(strttgh), // Convert to integer if needed
+                            nd: strdat,
+                            ng: strgiao,
+                            makh: parseInt(strmakh) 
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                $('#viewModal').modal('hide');
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert('Error occurred while updating category: ' + errorThrown);
+                        }
+                    });
+                }
+            });
+
+
+
+
+            $('#btnAdd').click(function () {
+                $('#modalTitle').text('Thêm Mới Đơn Đặt Hàng');
+                $('#maDH').val('');
+
+                $('#selTTTT').val('');
+                $('#selTTTT').prop('readonly', false);
+
+                $('#selTTGH').val('');
+                $('#selTTGH').prop('readonly', false);
+
+                $('#txtDat').val('');
+                $('#txtDat').prop('readonly', false);
+
+                $('#txtGiao').val('');
+                $('#txtGiao').prop('readonly', false);
+
+                $('#txtMaKH').val('');
+                $('#txtMaKH').prop('readonly', false);
+
+                $('#btnSubmit').show();
+                $('#viewModal').modal('show');
+            });
+
+
+        });
+</script>
+    }

@@ -1,0 +1,575 @@
+﻿@model PagedList.IPagedList<WebsiteGiayKingShoes.Models.SANPHAM>
+@using PagedList.Mvc;
+
+    @{
+        ViewBag.Title = "Index";
+        Layout = "~/Areas/Admin/Views/Shared/LayoutAdmin.cshtml";
+    }
+
+    <style>
+        /* Áp dụng margin-bottom cho tất cả các input trừ input cuối cùng */
+        .form-control {
+            margin-bottom: 10px;
+        }
+
+            /* Không áp dụng margin-bottom cho input cuối cùng */
+            .form-control:last-child {
+                margin-bottom: 0;
+            }
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .pagination-container {
+            text-align: center;
+            margin-top: 20px; /* Adjust the margin-top as needed */
+            font-family: 'Arial', sans-serif;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+            .pagination li {
+                display: inline;
+                margin: 0 5px;
+            }
+
+            .pagination a {
+                display: block;
+                padding: 8px 12px;
+                text-decoration: none;
+                color: #333;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+                .pagination a:hover {
+                    background-color: #eee;
+                }
+
+            .pagination .active a {
+                background-color: #007bff;
+                color: #fff;
+            }
+
+    </style>
+
+    <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modalTitle"></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="maSP" value="" hidden />
+                    <label>Tên sản phẩm</label>
+                    <input type="text" class="form-control" id="txtTenSP" placeholder="Tên sản phẩm" />
+                    <label>Brand</label>
+                    <input type="text" class="form-control" id="txtBrand" placeholder="Brand" />
+                    <div class="form-group">
+                        <select class="form-control" id="ddlBrand">
+                            <option value="1">Nike</option>
+                            <option value="2">Adidas</option>
+                            <option value="3">Jordan</option>
+                            <option value="4">Yeezy</option>
+                        </select>
+                    </div>
+                    <label id="txtsize">Size</label>
+                    <select class="form-control" id="ddlSize" multiple>
+                        <option value="38">Size 38</option>
+                        <option value="39">Size 39</option>
+                        <option value="40">Size 40</option>
+                        <option value="41">Size 41</option>
+                        <option value="42">Size 42</option>
+                        <option value="43">Size 43</option>
+                        <!-- Thêm các size khác vào đây -->
+                    </select>
+                    <label>Code sản phẩm</label>
+                    <input type="text" class="form-control" id="txtCode" placeholder="Code sản phẩm" />
+                    <label>Màu</label>
+                    <input type="text" class="form-control" id="txtColor" placeholder="Màu" />
+                    <label id="txtMT">Mô tả sản phẩm</label>
+                    <textarea class="form-control" id="txtDescription" placeholder="Mô tả sản phẩm"></textarea>
+                    <label id="txtimg">Ảnh bìa sản phẩm</label>
+                    <input type="file" class="form-control" id="fileCoverImage" />
+                    <label id="txtimgct">Ảnh chi tiết sản phẩm (gồm 4 ảnh)</label>
+                    <input type="file" class="form-control" id="fileDetailImage1" />
+                    <input type="file" class="form-control" id="fileDetailImage2" />
+                    <input type="file" class="form-control" id="fileDetailImage3" />
+                    <input type="file" class="form-control" id="fileDetailImage4" />
+                    <label>Giá bán</label>
+                    <input type="text" class="form-control" id="txtPrice" placeholder="Giá bán" />
+                    <label>Trạng Thái</label>
+                    <input type="text" class="form-control" id="txtStatus" placeholder="Trạng Thái" />
+                    <div class="form-group">
+                        <select class="form-control" id="ddlStatus">
+                            <option value="1">Còn hàng</option>
+                            <option value="2">Hết hàng</option>
+                            <option value="3">Liên hệ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnSubmit">Lưu</button>
+                    <button type="button" class="btn btn-primary" id="close-btn" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bg-light text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0">Quản lý sản phẩm</h6>
+            <button class="btn btn-success" id="btnAdd"><i class="fa fa-plus" aria-hiden="true"></i> Thêm mới</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>
+                            Tên sản phẩm
+                        </th>
+                        <th>
+                            Brand
+                        </th>
+                        <th>
+                            Code sản phẩm
+                        </th>
+                        <th>
+                            Màu
+                        </th>
+
+                        <th>
+                            Giá bán
+                        </th>
+                        <th>
+                            Trạng thái
+                        </th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenSP)
+                            </td>
+                            <td>
+                                @{
+                                    if (item.MaDM == 1)
+                                    {
+                                        <span>Nike </span>
+                                    }
+                                    else if (item.MaDM == 2)
+                                    {
+                                        <span>Adidas</span>
+                                    }
+                                    else if (item.MaDM == 3)
+                                    {
+                                        <span>Jordan</span>
+                                    }
+                                    else if (item.MaDM == 4)
+                                    {
+                                        <span>Yeezy</span>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CodeSP)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.color)
+                            </td>
+                            <td>
+                                @string.Format("{0:#,0} đ", item.GiaBan)
+                            </td>
+
+                            <td>
+                                @{
+                                    if (item.TrangThai == 1)
+                                    {
+                                        <span>Còn hàng</span>
+                                    }
+                                    else if (item.TrangThai == 2)
+                                    {
+                                        <span>Hết hàng</span>
+                                    }
+                                    else if (item.TrangThai == 3)
+                                    {
+                                        <span>Liên hệ</span>
+                                    }
+                                }
+
+                            </td>
+
+                            <td>
+                                <button class="btn btn-sm btn-info view-btn" data-id="@item.MaSP">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning update-btn" data-id="@item.MaSP">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="@item.MaSP">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+        <br />
+        <div class="text-center">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+        </div>
+    </div>
+
+
+    @section script {
+        <script>
+
+            $(document).ready(function () {
+                $("#close-btn").click(function () {
+                    $("#viewModal").modal("hide");
+                });
+
+                $(".view-btn").click(function () {
+                    let idSP = $(this).data("id");
+                    $.ajax({
+                        url: '/Admin/ManaPro/Detail',
+                        type: 'get',
+                        data: { maSP: idSP },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                $('#txtTenSP').val(data.sp.TenSP);
+                                $('#txtTenSP').prop('readonly', true);
+
+                                let categoryName = getCategoryName(data.sp.MaDM);
+                                $('#txtBrand').val(categoryName);
+                                $('#txtBrand').prop('readonly', true);
+                                $('#ddlBrand').hide();
+
+                                $('#txtCode').val(data.sp.CodeSP);
+                                $('#txtCode').prop('readonly', true);
+
+                                $('#txtColor').val(data.sp.color);
+                                $('#txtColor').prop('readonly', true);
+
+                                $('#txtPrice').val(data.sp.GiaBan);
+                                $('#txtPrice').prop('readonly', true);
+
+                                let statusText = getStatusText(data.sp.TrangThai);
+                                $('#txtStatus').val(statusText);
+                                $('#txtStatus').prop('readonly', true);
+                                $('#ddlStatus').hide();
+
+                                $('#txtMT').hide();
+                                $('#txtDescription').hide();
+
+                                $('#txtimg').hide();
+                                $('#fileCoverImage').hide();
+
+                                $('#txtimgct').hide();
+                                $('#fileDetailImage1').hide();
+                                $('#fileDetailImage2').hide();
+                                $('#fileDetailImage3').hide();
+                                $('#fileDetailImage4').hide();
+
+                                $('#txtsize').hide();
+                                $('#ddlSize').hide();
+                           
+                                $('#modalTitle').text('Xem chi tiết sản phẩm');
+                                $('#btnSubmit').hide();
+                                $('#viewModal').modal('show');
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function () {
+                            alert('Error occurred while fetching data.');
+                        }
+                    });
+                });
+
+
+
+                function getCategoryName(categoryCode) {
+                    switch (categoryCode) {
+                        case 1:
+                            return 'Nike';
+                        case 2:
+                            return 'Adidas';
+                        case 3:
+                            return 'Jordan';
+                        case 4:
+                            return 'Yeezy';
+                        default:
+                            return 'Unknown';
+                    }
+                }
+
+                function getStatusText(statusCode) {
+                    if (statusCode == 1) {
+                        return 'Còn hàng';
+                    } else if (statusCode == 2) {
+                        return 'Hết hàng';
+                    } else {
+                        return 'Liên hệ';
+                    }
+                }
+
+
+                $(".update-btn").click(function () {
+                    let idSP = $(this).data("id");
+                    $.ajax({
+                        url: '/Admin/ManaPro/Detail',
+                        type: 'get',
+                        data: { maSP: idSP },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                $('#txtTenSP').val(data.sp.TenSP);
+
+                                $('#ddlBrand').show().val(data.sp.MaDM);
+                                $('#txtBrand').hide();
+
+                                $('#ddlSize').val(data.sp.Sizes);
+
+                                $('#txtCode').val(data.sp.CodeSP);                      
+
+                                $('#txtColor').val(data.sp.color);
+
+                                $('#txtDescription').val(data.sp.MoTa);
+
+                                $('#txtPrice').val(data.sp.GiaBan);
+
+                                $('#ddlStatus').show().val(data.sp.TrangThai);
+                                $('#txtStatus').hide();
+
+                                displayImage('#fileCoverImage', data.sp.CoverImage);
+                                displayImage('#fileDetailImage1', data.sp.DetailImages[0]);
+                                displayImage('#fileDetailImage2', data.sp.DetailImages[1]);
+                                displayImage('#fileDetailImage3', data.sp.DetailImages[2]);
+                                displayImage('#fileDetailImage4', data.sp.DetailImages[3]);
+                              
+                             
+
+                                $('#modalTitle').text('Cập Nhập Sản Phẩm');
+                                $('#btnSubmit').show();
+                                $('#maSP').val(idSP);
+                                $('#viewModal').modal('show');
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function () {
+                            alert('Error occurred while fetching data.');
+                        }
+                    });
+                });
+
+                function displayImage(selector, imagePath) {
+                    if (imagePath) {
+                        // Assuming the file input has a preview container with an <img> tag
+                        $(selector + 'Preview').attr('src', imagePath);
+                    }
+                }
+
+                $(".delete-btn").click(function () {
+                    let idSP = $(this).data("id");
+                    if (confirm('Bạn có thực sự muốn xóa')) {
+
+
+                        $.ajax({
+                            url: '/Admin/ManaPro/Delete',
+                            type: 'post',
+                            data: {
+                                maSP: idSP
+                            },
+                            success: function (data) {
+                                if (data.code == 200) {
+                                    alert(data.msg);
+                                    window.location.reload();
+                                }
+                                else {
+                                    alert(data.msg);
+                                }
+
+                            }
+                        })
+                    }
+                });
+
+
+                $('#btnSubmit').click(function () {
+                    let strtensp = $('#txtTenSP').val().trim();
+                    let strbrand = $('#ddlBrand').val().trim();
+                    let strcode = $('#txtCode').val().trim();
+                    let strcolor = $('#txtColor').val().trim();
+                    let strprice = $('#txtPrice').val().trim();
+                    let strstatus = $('#ddlStatus').val().trim();
+                    let strDescription = $('#txtDescription').val().trim();
+                    let selectedSizes = $('#ddlSize').val();
+
+                    let maSP = $('#maSP').val().trim();
+                    let formData = new FormData();
+                    formData.append('tensp', strtensp);
+                    formData.append('brand', strbrand);
+                    formData.append('code', strcode);
+                    formData.append('color', strcolor);
+                    formData.append('price', strprice);
+                    formData.append('status', strstatus);
+                    formData.append('description', strDescription);
+                    formData.append('sizes', selectedSizes);
+                    formData.append('maSP', maSP);
+
+                    // Append file data to FormData
+                    formData.append('coverImage', $('#fileCoverImage')[0].files[0]);
+                    formData.append('detailImage1', $('#fileDetailImage1')[0].files[0]);
+                    formData.append('detailImage2', $('#fileDetailImage2')[0].files[0]);
+                    formData.append('detailImage3', $('#fileDetailImage3')[0].files[0]);
+                    formData.append('detailImage4', $('#fileDetailImage4')[0].files[0]);
+
+                  
+
+                    if (maSP == 0) {
+                        // Thêm tin tức mới
+                        $.ajax({
+                            url: '/Admin/ManaPro/Add',
+                            type: 'POST',
+                            data: formData,
+                            contentType: false, // Required for file uploads
+                            processData: false,                 
+                            success: function (data) {
+                                if (data.code == 200) {
+                                    alert(data.msg);
+                                    clearFieldsAndCloseModal();                                  
+                                    window.location.reload();
+                                } else {
+                                    alert(data.msg);
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                alert('Error occurred while adding news: ' + errorThrown);
+                            }
+                        });
+                    } else {
+                        // Cập nhật tin tức
+                        let newBrandValue = $('#ddlBrand').val();
+                        let newStatusValue = $('#ddlStatus').val();
+
+                        if (newBrandValue != strbrand || newStatusValue != strstatus) {
+                            // Brand has changed, include it in the update request
+                            $.ajax({
+                                url: '/Admin/ManaPro/Update',
+                                type: 'POST',
+                                data: {
+                                    maSP: maSP,
+                                    tensp: strtensp,
+                                    brand: newBrandValue,
+                                    code: strcode,
+                                    color: strcolor,
+                                    price: strprice,
+                                    status: newStatusValue
+                                },
+                                success: function (data) {
+                                    if (data.code == 200) {
+                                        alert(data.msg);
+                                        $('#viewModal').modal('hide');
+                                        window.location.reload();
+                                    } else {
+                                        alert(data.msg);
+                                    }
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    alert('Error occurred while updating category: ' + errorThrown);
+                                }
+                            });
+                        } else {
+                            // Update 
+                            $.ajax({
+                                url: '/Admin/ManaPro/Update',
+                                type: 'POST',
+                                data: formData,
+                                contentType: false, // Required for file uploads
+                                processData: false,
+                                success: function (data) {
+                                    if (data.code == 200) {
+                                        alert(data.msg);
+                                        $('#viewModal').modal('hide');
+                                        window.location.reload();
+                                    } else {
+                                        alert(data.msg);
+                                    }
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    alert('Error occurred while updating category: ' + errorThrown);
+                                }
+                            });
+                        }
+                    }
+                });
+
+                function clearFieldsAndCloseModal() {
+                    $('#txtTenSP').val('');
+                    $('#ddlBrand').val('');
+                    $('#txtCode').val('');
+                    $('#txtColor').val('');
+                    $('#txtPrice').val('');
+                    $('#ddlStatus').val('');
+                    $('#fileCoverImage').val(''); // Clear file inputs
+                    $('#fileDetailImage1').val('');
+                    $('#fileDetailImage2').val('');
+                    $('#fileDetailImage3').val('');
+                    $('#fileDetailImage4').val('');
+                    $('#viewModal').modal('hide');
+                }
+
+
+
+                $('#btnAdd').click(function () {
+                    $('#modalTitle').text('Thêm Mới Sản Phẩm');
+                    $('#maSP').val('');
+
+                    $('#txtTenSP').val('');
+                    $('#txtTenSP').prop('readonly', false);
+
+                    $('#ddlBrand').show();
+                    $('#ddlBrand').val(''); // Set the dropdown value as needed
+                    $('#txtBrand').hide();
+
+                    $('#txtCode').val('');
+                    $('#txtCode').prop('readonly', false);
+
+                    $('#txtColor').val('');
+                    $('#txtColor').prop('readonly', false);
+
+                    $('#txtPrice').val('');
+                    $('#txtPrice').prop('readonly', false);
+
+                    $('#txtDescription').val('');
+                    $('#fileCoverImage').val('');
+                    $('#fileDetailImage1').val('');
+                    $('#fileDetailImage2').val('');
+                    $('#fileDetailImage3').val('');
+                    $('#fileDetailImage4').val('');
+
+                    $('#ddlStatus').show();
+                    $('#ddlStatus').val('');
+                    $('#txtStatus').hide();
+
+                    $('#btnSubmit').show();
+                    $('#viewModal').modal('show');1  
+                });
+
+            });
+        </script>
+    }

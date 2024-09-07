@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="~/images/title.png">
+    <title>King Shoes</title>
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+
+    @Styles.Render("~/Admin/css")
+    @Scripts.Render("~/Admin/JS")
+    @RenderSection("script", required: false)
+
+</head>
+<body>
+
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+        @Html.Partial("SpinnerPartial")
+
+
+        <div class="sidebar pe-4 pb-3">
+            @Html.Partial("SlideBarPartial")
+        </div>
+
+        <div class="content">
+            @Html.Partial("NavAdminPartial")
+
+
+            <div class="container-fluid pt-4 px-4">
+                @RenderBody()
+            </div>
+        </div>
+
+
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    </div>
+
+
+</body>
+</html>
+

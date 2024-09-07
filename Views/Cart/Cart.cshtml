@@ -1,0 +1,141 @@
+﻿@using WebsiteGiayKingShoes.Models
+@model List<Cart>
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/LayoutUser.cshtml";
+
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<div class="shopping-cart">
+    <!-- Title -->
+    <div class="title-cart">
+        GIỎ HÀNG
+        <div class="cart-count">
+            (@ViewBag.TongSoLuong) sản phẩm
+        </div>
+    </div>
+
+
+    <!-- Product #1 -->
+    @foreach (var item in Model)
+    {
+        <div class="item-cart">
+            <div class="buttons">
+                <span>
+                    @Html.ActionLink("✖", "XoaSPKhoiGioHang", new { @iMaSP = item.iMaSP, @selectedSize = item.sSize }, new { @class = "delete-cart" })
+                </span>
+
+                <span class="like-btn"></span>
+            </div>
+            <div class="image-cart">
+                <img src="~/images/SanPham/@Path.GetFileName(item.sAnhBia)" alt="" />
+            </div>
+
+            <div class="description">
+                <span><strong>@item.sTenSP</strong></span>
+                <span>Size: @item.sSize</span>
+                <span>@item.sColor</span>
+            </div>
+            @using (Html.BeginForm("CapNhapGioHang", "Cart", new { iMaSP = item.iMaSP }, FormMethod.Post, new { @class = "update-form" }))
+            {
+                <div class="quantity">
+                    <input type="hidden" name="productId" value="@item.iMaSP" />
+                    <input type="hidden" name="size" value="@item.sSize" /> <!-- Add this line for size -->
+                    <button class="minus-btn-cart" type="button" name="button">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <input type="text" name="txtSoLuong" min="1" class="quantity-input" value="@item.iSoLuong">
+                    <button class="plus-btn-cart" type="button" name="button">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            }
+
+
+            <div class="price-cart">
+                <div class="current-price">
+                    <strong>Số lượng:</strong> @item.iSoLuong
+                </div>
+                <div class="total-price">
+                    <strong>Thành tiền:</strong> @string.Format("{0:#,##0,0}", @item.dThanhTien) VND
+                </div>
+            </div>
+        </div>
+    }
+
+
+        <hr />
+
+        <div class="total-submit">
+            <div class="total-amount">
+                <p>Tổng tiền: <span style="color: red;">@string.Format("{0:#,##0,0}", @ViewBag.TongTien) VND</span></p>
+            </div>
+
+            @Html.ActionLink("Đặt hàng", "DatHang", "Cart", new { url = Request.Url.ToString() }, new { @class = "submit-btn" })
+
+        </div>
+    </div>
+
+<div class="pay-cart">
+    <img src="~/images/king-shoes-thanh-toan.png" alt="Alternate Text" />
+    <div class="info-cart">
+        <p><strong>Mua hàng&nbsp;trên website KingShoes.vn:</strong></p>
+        <p><strong>1) Giao -&nbsp;Nhận:</strong></p>
+        <p>- KingShoes.vn ship hàng toàn quốc COD - Kiểm tra hàng trước và thanh toán trực tiếp khi nhận hàng.&nbsp;</p>
+        <p><strong>2) Đặt cọc - Xác nhận đơn hàng - Giao hàng: ( Áp dụng cho KH ngoại thành HCM và mua lần đầu&nbsp; )</strong></p>
+        <p>- Bạn cọc bằng 2 hình thức nạp card điện thoại mobifone hoặc chuyển&nbsp; khoản <strong>200K</strong> vào tài khoản ngân hàng <strong>(nội dung ck: ghi họ tên và số điện thoại)</strong>. Kingshoes liện lạc xác nhận cọc và ship hàng ngay cho Bạn.</p>
+        <p>
+            <span id="cke_bm_739S" style="display: none;"><span id="cke_bm_989S" style="display: none;">&nbsp;</span>&nbsp;</span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span>&nbsp;Ngân Hàng <b>VietcomBank</b>&nbsp;<span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><br>
+            ✅ STK: <b>103 270 3333</b>&nbsp;<br>
+            ✅ CTK: <b>KING SHOES</b>&nbsp;✅ CN VCB Tân Định - PGD Trần Quốc Toản
+        </p>
+        <p>
+            <span id="cke_bm_739S" style="display: none;">&nbsp;</span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span>&nbsp;Ngân Hàng <strong>ACB</strong>&nbsp;<span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><span contenteditable="false" tabindex="-1"><img alt="" data-widget="image" height="16" src="https://static.xx.fbcdn.net/images/emoji.php/v9/ffc/1/16/1f3e6.png" width="16"></span><br>
+            ✅ STK: <b>6633 8888 68</b>&nbsp;<br>
+            ✅ CTK: <b>KING SHOES</b>&nbsp;✅ CN ACB - PGD NGUYEN KHOAI
+        </p>
+        <div class="info-cart-img">
+            <p><span contenteditable="false" tabindex="-1"><img alt="King Shoes tài khoản ngân hàng" data-widget="image" height="670" src="~/images/Ngan-hang-tai-khoan-king-shoes.jpeg" width="550"></span></p>
+        </div>
+        <p><strong>---&gt;&gt;&gt; Chúng tôi biết BẠN có nhiều sự lựa chọn. Cảm ơn BẠN đã chọn KING SHOES.</strong></p>
+    </div>
+</div>
+
+
+<script>
+    document.querySelectorAll('.like-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            this.classList.toggle('is-active');
+        });
+    });
+
+    $(document).ready(function () {
+        $(".quantity").on("click", ".minus-btn-cart, .plus-btn-cart", function () {
+            var $input = $(this).siblings(".quantity-input");
+            var oldValue = parseInt($input.val());
+            var operator = $(this).hasClass("minus-btn-cart") ? -1 : 1;
+            var newValue = oldValue + operator;
+
+            if (newValue > 0) {
+                $input.val(newValue);
+
+                var productId = $input.siblings("input[name='productId']").val();
+                var size = $input.siblings("input[name='size']").val(); // Add this line
+
+                $.ajax({
+                    url: "/Cart/UpdateQuantity",
+                    type: "POST",
+                    data: { productId: productId, size: size, newQuantity: newValue }, // Include size
+                    success: function (data) {
+                        console.log("Quantity updated successfully.");
+                    },
+                    error: function () {
+                        console.log("Error updating quantity.");
+                    }
+                });
+            }
+        });
+    });
+
+</script>

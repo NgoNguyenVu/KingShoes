@@ -1,0 +1,50 @@
+﻿@model WebsiteGiayKingShoes.Models.TinTuc
+
+@{
+    ViewBag.Title = "BlogDetail";
+    Layout = "~/Views/Shared/LayoutUser.cshtml";
+}
+
+
+<div class="blogdetail">
+    <div class="blogdetail-title">
+        <h3>@Model.Title</h3>
+    </div>
+    <div class="blogdetail-content">
+        <h3>@Model.Content</h3>
+    </div>
+    <div class="blogdetail-img">
+        <img src="~/images/TinTuc/@Model.AnhBia" alt="Alternate Text" />
+    </div>
+</div>
+
+
+<style>
+    .blogdetail {
+        max-width: 800px; /* Adjust the maximum width as needed */
+        margin: 0 auto; /* Center the container */
+        margin-top:140px;
+    }
+
+    /* Style for the blog title */
+    .blogdetail-title h3 {
+        color: #666; /* Set your desired text color */
+        font-size: 30px; /* Set your desired font size */
+        margin-bottom: 10px; /* Adjust spacing as needed */
+    }
+
+    /* Style for the blog content */
+    .blogdetail-content h3 {
+        color: #333; /* Set your desired text color */
+        font-size: 18px; /* Set your desired font size */
+        margin-bottom: 20px; /* Adjust spacing as needed */
+    }
+
+    /* Style for the blog image */
+    .blogdetail-img img {
+        max-width: 100%; /* Make sure the image doesn't exceed its container */
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 8px; /* Optional: Add rounded corners to the image */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle box shadow */
+    }
+</style>

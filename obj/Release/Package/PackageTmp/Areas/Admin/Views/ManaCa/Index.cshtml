@@ -1,0 +1,54 @@
+﻿@model IEnumerable<WebsiteGiayKingShoes.Models.DANHMUC>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/LayoutAdmin.cshtml";
+}
+
+
+<div class="bg-light text-center rounded p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h6 class="mb-0">Quản lý danh mục</h6>
+        <button class="btn btn-success" id="btnAdd"><i class="fa fa-plus" aria-hiden="true"></i> Thêm mới</button>
+    </div>
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.STT)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.TenDM)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.STT)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TenDM)
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info view-btn" data-id="@item.MaDM">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning update-btn" data-id="@item.MaDM">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="@item.MaDM">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

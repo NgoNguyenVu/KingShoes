@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "Verify OTP";
+    Layout = "~/Views/Shared/LayoutUser.cshtml";
+}
+
+<div class="verify-otp-container">
+    <h2 class="verify-otp-title">Verify OTP</h2>
+    <form id="verify-otp-form" action="@Url.Action("VerifyOTP", "User")" method="post">
+        <div class="form-group">
+            <input type="text" id="OTP" name="OTP" class="form-control" placeholder="Enter OTP" required />
+        </div>
+
+        @if (ViewBag.ThongBao != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.ThongBao
+            </div>
+        }
+
+        <button type="submit" class="btn btn-primary verify-otp-button">Verify</button>
+    </form>
+</div>
+
+<style>
+    /* CSS cho container chứa tất cả nội dung của trang Verify OTP */
+    .verify-otp-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh; /* Chiều cao của container, 100vh tương đương với 100% chiều cao của viewport */
+    }
+
+    /* CSS cho tiêu đề "Verify OTP" */
+    .verify-otp-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    /* CSS cho biểu mẫu */
+    #verify-otp-form {
+        width: 300px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    /* CSS cho trường nhập */
+    /* CSS cho trường nhập */
+    .form-control[type="text"] {
+        width: 90%; /* Đặt chiều rộng là 90% cho input type=text */
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+
+    /* CSS cho nút "Verify" */
+    .verify-otp-button {
+        width: 90%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .verify-otp-button:hover {
+            background-color: #0056b3;
+        }
+
+    /* CSS cho thông báo lỗi */
+    .alert {
+        margin-top: 20px;
+        text-align: center;
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+
+</style>

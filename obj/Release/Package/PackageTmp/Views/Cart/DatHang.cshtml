@@ -1,0 +1,86 @@
+﻿    @using WebsiteGiayKingShoes.Models
+@{
+    <link rel="shortcut icon" href="~/images/title.png">
+    <title>King Shoes</title>
+    User kh = (User)Session["TaiKhoan"];
+    Layout = "~/Views/Shared/LayoutUser.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    <div class="row-order">
+        <div class="col-75">
+            <div class="container-order">
+                <form action="">
+                    <div class="row-order">
+                        <div class="col-50">
+                            <h2>Thông tin giao hàng</h2>
+                            <label for="fname"><i class="fa fa-user"></i> Họ Và Tên</label>
+                            <input type="text" id="fname" placeholder="@kh.HoTen" readonly>
+                            <label for="adr"><i class="fa fa-address-card-o"></i> Địa Chỉ</label>
+                            <input type="text" id="adr" placeholder="@kh.DiaChi" readonly>
+                            <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                            <input type="text" id="email" placeholder="@kh.Email" readonly>
+                            <label for="city"><i class=" fas fa-mobile-alt"></i> Số Điện Thoại</label>
+                            <input type="text" id="city"  placeholder="@kh.DienThoai" readonly>
+
+                            <div class="row-order">
+                                <div class="col-50">
+                                    <label for="state"><i class="fas fa-calendar-alt"></i> Ngày Đặt</label>
+                                    <input class="order-input" type="text" placeholder="@DateTime.Now.ToShortDateString()" readonly>
+                                </div>
+                                <div class="col-50">
+                                    <label for="zip"><i class="far fa-calendar-alt"></i> Ngày Giao</label>
+                                    <input class="order-input" type="date" name="NgayGiao">
+                                    @ViewData["Err1"]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="submit-order">
+                        @Html.ActionLink("Trở Về Giỏ Hàng", "Cart", "Cart", new { @class = " back-to-order" })
+
+                        @using (Html.BeginForm("DatHang", "Cart", FormMethod.Post))
+                        {
+                            <button type="submit" class="submit-btn-order">Thanh Toán</button>
+                        }
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <div class="col-25">
+            <div class="container-order">
+                @foreach (var item in Model)
+                {
+                    <div class="order-product">
+                        <div class="img-order">
+                            <img src="~/images/SanPham/@Path.GetFileName(item.sAnhBia)" alt="Alternate Text" />
+                            <span class="img-product">@item.iSoLuong</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-name">@item.sTenSP</span>
+                            <span class="order-size">Size Giày: @item.sSize</span>
+                        </div>
+                        <div class="order-price">
+                            <span>@string.Format("{0:#,##0,0}", @item.dThanhTien) VND</span>
+                        </div>
+                    </div>
+                }
+                    <hr>
+                    <div class="order-voucher">
+                        <input type="text" placeholder="Nhập mã giảm giá..." class="voucher-input">
+                        <button class="submit-button">Áp dụng</button>
+                    </div>
+                    <hr />
+                    <div class="order-pay">
+                        <p>Tổng Cộng <span class="price" style="color:black"><b>@string.Format("{0:#,##0,0}", @ViewBag.TongTien) VND</b></span></p>
+                    </div>
+                </div>
+        </div>
+    </div>
+}
+

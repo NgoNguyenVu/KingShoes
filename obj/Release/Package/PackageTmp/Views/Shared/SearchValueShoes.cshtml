@@ -1,0 +1,36 @@
+﻿<form class="timkiem">
+    <div>
+        <label for="size">Size:</label>
+        <select id="size" name="size">
+            <option value="all" selected>Tất cả</option>
+            <option value="39">39</option>
+            <option value="40">40</option>
+            <option value="41">41</option>
+            <option value="42">42</option>
+            <option value="43">43</option>
+
+        </select>
+    </div>
+    <div>
+        <label for="price">Giá:</label>
+        <select id="price" name="price">
+            <option value="all" selected>Tất cả</option>
+            <option value="under3tr">Dưới 3 triệu</option>
+            <option value="3to5">Từ 3 triệu đến 5 triệu</option>
+            <option value="5to10">Từ 5 triệu đến 10 triệu</option>
+            <option value="10to15">Từ 10 triệu đến 15 triệu</option>
+            <option value="over15">Trên 15 triệu</option>
+        </select>
+    </div>
+    <div>
+        <label for="sort">Sắp xếp theo:</label>
+        <select id="sort" name="sort">
+            <option value="all" selected>Tất cả</option>
+            <option value="latest">Mới nhất</option>
+            @* <option value="popular">Phổ biến nhất</option> *@
+            <option value="priceHighToLow">Giá cao đến thấp</option>
+            <option value="priceLowToHigh">Giá thấp đến cao</option>
+        </select>
+    </div>
+    <input type="submit" value="Tìm Kiếm" class="custom-button">
+</form>

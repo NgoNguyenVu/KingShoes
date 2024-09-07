@@ -1,0 +1,27 @@
+﻿
+<div class="news-section">
+    <h1>Tin Tức Mới</h1>
+    @foreach (var tintuc in ViewBag.NewsArticles)
+    {
+        <a href="@Url.Action("BlogDetail", new { id = tintuc.MaTinTuc })">
+            <div class="news-item">
+                <div class="news-img">
+                    <img src="~/images/TinTuc/@tintuc.AnhBia" alt="Hình ảnh tin tức 1">
+                </div>
+                <div class="news-nd">
+                    <h3>@tintuc.Title</h3>
+                    <p>@tintuc.Publish_date.ToString("dd/MM/yyyy")</p>
+                </div>
+            </div>
+            <!-- Thêm tin tức khác theo cùng mẫu -->
+        </a>
+            }
+            @Html.ActionLink("Xem thêm", "Blog")
+
+    </div>
+
+
+<style>
+
+
+</style>

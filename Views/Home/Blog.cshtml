@@ -1,0 +1,39 @@
+﻿@model List<WebsiteGiayKingShoes.Models.TinTuc>
+
+@{
+    ViewBag.Title = "Blog";
+    Layout = "~/Views/Shared/LayoutUser.cshtml";
+}
+
+<section id="blog">
+
+    <div class="blog-heading">
+        <h3>Blog</h3>
+    </div>
+
+    <div class="blog-container">
+
+        @foreach (var blog in Model)
+        {
+        <div class="blog-box">
+            <a href="@Url.Action("BlogDetail", new { id = blog.MaTinTuc })">
+                <div class="blog-img">
+                    <img src="~/images/TinTuc/@blog.AnhBia">
+                </div>
+
+                <div class="blog-text">
+                    <span>@blog.Publish_date</span>
+                    <h3> @blog.Title</h3> 
+                    <p>@blog.Content</p>
+                    
+                </div>
+            </a>
+        </div>
+
+        }
+    </div>
+</section>
+
+<style>
+
+</style>

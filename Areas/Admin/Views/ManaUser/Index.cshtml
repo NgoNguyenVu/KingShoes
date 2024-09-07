@@ -1,0 +1,343 @@
+﻿@model IEnumerable<WebsiteGiayKingShoes.Models.User>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/LayoutAdmin.cshtml";
+}
+
+<style>
+    /* Áp dụng margin-bottom cho tất cả các input trừ input cuối cùng */
+    .form-control {
+        margin-bottom: 10px;
+    }
+
+        /* Không áp dụng margin-bottom cho input cuối cùng */
+        .form-control:last-child {
+            margin-bottom: 0;
+        }
+</style>
+
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle"></h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="maUser" value="" hidden />
+                <label>Họ Và Tên</label>
+                <input type="text" class="form-control" id="txtHoTen" placeholder="Họ Và Tên" />
+                <label>Tài Khoản</label>
+                <input type="text" class="form-control" id="txtTaiKhoan" placeholder="Tài Khoản" />
+                <label>Mật Khẩu</label>
+                <input type="text" class="form-control" id="txtMK" placeholder="Mật Khẩu" />
+                <label>Email</label>
+                <input type="text" class="form-control" id="txtEmail" placeholder="Email" />
+                <label>Điện thoại</label>
+                <input type="text" class="form-control" id="txtDT" placeholder="Điện Thoại" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSubmit">Lưu</button>
+                <button type="button" class="btn btn-primary" id="close-btn" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="bg-light text-center rounded p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h6 class="mb-0">Quản lý User</h6>
+        <button class="btn btn-success" id="btnAdd"><i class="fa fa-plus" aria-hiden="true"></i> Thêm mới</button>
+    </div>
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>
+                        Họ tên
+                    </th>
+                    <th>
+                        Tài khoản
+                    </th>
+                    <th>
+                        Mật khẩu
+                    </th>
+
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Điện thoại
+                    </th>
+                    <th>Thao tác</th>
+                </tr>
+            <thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HoTen)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TaiKhoan)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MatKhau)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DienThoai)
+                        </td>
+
+
+                        <td>
+                            <button class="btn btn-sm btn-info view-btn" data-id="@item.MaUser">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning update-btn" data-id="@item.MaUser">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="@item.MaUser">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+@section script {
+    <script>
+
+        $(document).ready(function () {
+            $("#close-btn").click(function () {
+                $("#viewModal").modal("hide");
+            });
+
+
+            $(".view-btn").click(function () {
+                let idUS = $(this).data("id");
+                $.ajax({
+                    url: '/Admin/ManaUser/Detail',
+                    type: 'get',
+                    data: { maUser: idUS },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $('#txtHoTen').val(data.us.HoTen);
+                            $('#txtHoTen').prop('readonly', true);
+
+                            $('#txtTaiKhoan').val(data.us.TaiKhoan);
+                            $('#txtTaiKhoan').prop('readonly', true);
+
+                            $('#txtMK').val(data.us.MatKhau);
+                            $('#txtMK').prop('readonly', true);
+
+                            $('#txtEmail').val(data.us.Email);
+                            $('#txtEmail').prop('readonly', true);
+
+                            $('#txtDT').val(data.us.DienThoai);
+                            $('#txtDT').prop('readonly', true);
+
+                            $('#modalTitle').text('Xem chi tiết người dùng');
+                            $('#btnSubmit').hide();
+                            $('#viewModal').modal('show');
+                        } else {
+                            alert(data.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while fetching data.');
+                    }
+                });
+            });
+
+
+            $(".update-btn").click(function () {
+                let idUS = $(this).data("id");
+                $.ajax({
+                    url: '/Admin/ManaUser/Detail',
+                    type: 'get',
+                    data: { maUser: idUS },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $('#txtHoTen').val(data.us.HoTen);
+
+                            $('#txtTaiKhoan').val(data.us.TaiKhoan);
+
+                            $('#txtMK').val(data.us.MatKhau);
+
+                            $('#txtEmail').val(data.us.Email);
+
+                            $('#txtDT').val(data.us.DienThoai);
+
+                            $('#modalTitle').text('Cập Nhập Người Dùng');
+                            $('#btnSubmit').show();
+                            $('#maUser').val(idUS);
+                            $('#viewModal').modal('show');
+                        } else {
+                            alert(data.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while fetching data.');
+                    }
+                });
+            });
+
+
+            $(".delete-btn").click(function () {
+                let idUS = $(this).data("id");
+                if (confirm('Bạn có thực sự muốn xóa')) {
+
+
+                    $.ajax({
+                        url: '/Admin/ManaUser/Delete',
+                        type: 'post',
+                        data: {
+                            maUser: idUS
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                window.location.reload();
+                            }
+                            else {
+                                alert(data.msg);
+                            }
+
+                        }
+                    })
+                }
+            });
+
+
+            $('#btnSubmit').click(function () {
+                let strhoten = $('#txtHoTen').val().trim();
+                let strtk = $('#txtTaiKhoan').val().trim();
+                let strmk = $('#txtMK').val().trim();
+                let stremail = $('#txtEmail').val().trim();
+                let strdt = $('#txtDT').val().trim();
+
+
+            let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if (!passwordRegex.test(strmk)) {
+                alert('Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm ít nhất một chữ số, một chữ thường và một chữ hoa');
+                return;
+            }
+
+            // Check if username is at least 5 characters long
+            if (strtk.length < 5) {
+                alert('Tài khoản phải có ít nhất 5 ký tự');
+                return;
+            }
+
+            if (strtk.length === 0 && strmk.length === 0) {
+                alert('Nhập thiếu tài khoản hoặc mật khẩu');
+                return;
+            }
+
+            let maUser = $('#maUser').val().trim();
+
+                if (maUser == 0) {
+                    // Thêm tin tức mới
+                    $.ajax({
+                        url: '/Admin/ManaUser/Add',
+                        type: 'POST',
+                        data: {
+                           ht: strhoten,
+                           tK: strtk,
+                           mk: strmk,
+                           email: stremail,
+                           dt: strdt
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                $('#txtHoTen').val('');
+                                $('#txtTaiKhoan').val('');
+                                $('#txtMK').val('');
+                                $('#txtEmail').val('');
+                                $('#txtDT').val('');
+                                $('#viewModal').modal('hide');
+                    
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert('Error occurred while adding news: ' + errorThrown);
+                        }
+                    });
+                } else {
+                    // Cập nhật tin tức
+                    $.ajax({
+                        url: '/Admin/ManaUser/Update',
+                        type: 'POST',
+                        data: {
+                            maUser: maUser,
+                            ht: strhoten,
+                            tK: strtk,
+                            mk: strmk,
+                            email: stremail,
+                            dt: strdt
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                $('#viewModal').modal('hide');
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert('Error occurred while updating category: ' + errorThrown);
+                        }
+                    });
+                }
+            });
+
+
+
+        $('#btnAdd').click(function () {
+            $('#modalTitle').text('Thêm Mới Người Dùng');
+            $('#maUser').val('');
+
+            $('#txtHoTen').val('');
+            $('#txtHoTen').prop('readonly', false);
+
+            $('#txtTaiKhoan').val('');
+            $('#txtTaiKhoan').prop('readonly', false);
+
+            $('#txtMK').val('');
+            $('#txtMK').prop('readonly', false);
+
+            $('#txtEmail').val('');
+            $('#txtEmail').prop('readonly', false);
+
+            $('#txtDT').val('');
+            $('#txtDT').prop('readonly', false);
+
+            $('#btnSubmit').show();
+            $('#viewModal').modal('show');
+        });
+
+
+
+
+
+        });
+    </script>
+}

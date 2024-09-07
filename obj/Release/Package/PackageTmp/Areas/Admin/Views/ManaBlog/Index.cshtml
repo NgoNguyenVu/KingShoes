@@ -1,0 +1,230 @@
+﻿@model IEnumerable<WebsiteGiayKingShoes.Models.TinTuc>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/LayoutAdmin.cshtml";
+}
+
+
+
+
+
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle"></h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="maTT" value="" hidden />
+                <label>Tin Tức</label>
+                <input type="text" class="form-control" id="txtTenTinTuc" placeholder="Tên Tin Tức" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSubmit">Lưu</button>
+                <button type="button" class="btn btn-primary" id="close-btn" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="bg-light text-center rounded p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h6 class="mb-0">Quản lý tin tức</h6>
+        <button class="btn btn-success" id="btnAdd"><i class="fa fa-plus" aria-hiden="true"></i> Thêm mới</button>
+    </div>
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Mã tin tức</th>
+                    <th>Tiêu đề</th>
+                    <th>Ngày cập nhập</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.MaTinTuc)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", item.Publish_date)</td>
+                        <td>
+                            <button class="btn btn-sm btn-info view-btn" data-id="@item.MaTinTuc">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning update-btn" data-id="@item.MaTinTuc">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="@item.MaTinTuc">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section script {
+    <script>
+        $(document).ready(function () {
+            $("#close-btn").click(function () {
+                $("#viewModal").modal("hide");
+            });
+
+
+            $(".view-btn").click(function () {
+                let idTinTuc = $(this).data("id");
+                $.ajax({
+                    url: '/Admin/ManaBlog/Detail',
+                    type: 'get',
+                    data: { maTT: idTinTuc },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $('#txtTenTinTuc').val(data.tt.Title);
+                            $('#modalTitle').text('Xem chi tiết tin tức');
+                            $('#btnSubmit').hide();
+                            $('#viewModal').modal('show');
+                        } else {
+                            alert(data.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while fetching data.');
+                    }
+                });
+            });
+
+            $(".update-btn").click(function () {
+                let idTinTuc = $(this).data("id");
+                $.ajax({
+                    url: '/Admin/ManaBlog/Detail',
+                    type: 'get',
+                    data: { maTT: idTinTuc },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $('#txtTenTinTuc').val(data.tt.Title);
+                            $('#txtTenTinTuc').prop('readonly', false);
+                            $('#modalTitle').text('Cập Nhập Tin Tức');
+                            $('#btnSubmit').show();
+                            $('#maTT').val(idTinTuc);
+                            $('#viewModal').modal('show');
+                        } else {
+                            alert(data.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while fetching data.');
+                    }
+                });
+            });
+
+            $(".delete-btn").click(function () {
+                let idTinTuc = $(this).data("id");
+                if (confirm('Bạn có thực sự muốn xóa')) {
+
+
+                    $.ajax({
+                        url: '/Admin/ManaBlog/Delete',
+                        type: 'post',
+                        data: {
+                            maTT: idTinTuc
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                window.location.reload();
+                            }
+                            else {
+                                alert(data.msg);
+                            }
+
+                        }
+                    })
+                }
+            });
+
+
+            $('#btnSubmit').click(function () {
+                let strTenTinTuc = $('#txtTenTinTuc').val().trim();
+
+                if (strTenTinTuc.length === 0) {
+                    alert('Vui lòng nhập tên chủ đề');
+                    return;
+                }
+
+                let maTT = $('#maTT').val().trim();
+
+                if (maTT == 0) {
+                    // Thêm tin tức mới
+                    $.ajax({
+                        url: '/Admin/ManaBlog/AddTinTuc',
+                        type: 'POST',
+                        data: {
+                            strTenTT: strTenTinTuc
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                $('#txtTenTinTuc').val('');
+                                $('#viewModal').modal('hide');
+                                // Load lại trang sau khi thêm chủ đề thành công
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert('Error occurred while adding news: ' + errorThrown);
+                        }
+                    });
+                } else {
+                    // Cập nhật tin tức
+                    $.ajax({
+                        url: '/Admin/ManaBlog/Update',
+                        type: 'POST',
+                        data: {
+                            maTT: maTT,
+                            strTenTT: strTenTinTuc
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                alert(data.msg);
+                                $('#viewModal').modal('hide');
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert('Error occurred while updating category: ' + errorThrown);
+                        }
+                    });
+                }
+            });
+
+
+            $('#btnAdd').click(function () {
+                $('#modalTitle').text('Thêm Mới Tin Tức');
+                $('#maTT').val('');
+                $('#txtTenTinTuc').val('');
+                $('#txtTenTinTuc').prop('readonly', false);
+                $('#btnSubmit').show();
+                $('#viewModal').modal('show');
+            });
+        });
+
+
+
+
+
+
+
+    </script>
+}
+
+
+

@@ -1,0 +1,141 @@
+﻿@model WebsiteGiayKingShoes.Models.SANPHAM
+
+@{
+    ViewBag.Title = "ProductDetail";
+    Layout = "~/Views/Shared/LayoutUser.cshtml";
+
+}
+
+<div class="card-wrapper">
+    <div class="card">
+        <!-- card left -->
+        <div class="product-imgs">
+            <div class="img-display">
+                <div class="img-showcase">
+                    @foreach (var image in ViewBag.ProductImages)
+                    {
+                        <img src="~/images/SanPham/@Path.GetFileName(image.DuongDan)" alt="shoe image">
+                    }
+
+                </div>
+            </div>
+            <div class="img-select">
+                @foreach (var image in ViewBag.ProductImages)
+                {
+                    <div class="img-item">
+                        <a href="#" data-id="@image.MaPD">
+                            <img src="~/images/SanPham/@Path.GetFileName(image.DuongDan)" alt="shoe image">
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- card right -->
+        <div class="product-content">
+            <h2 class="product-title">@ViewBag.Product.TenSP</h2>
+            <div class="product-rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span>4.7(21)</span>
+            </div>
+
+            <p class="product-code">Mã SP: <strong>@ViewBag.Product.CodeSP</strong></p>
+
+            <div class="product-price">
+                @*  <p class="last-price">Old Price: <span>$257.00</span></p> *@
+                <p class="new-price"><strong>@Html.FormatValue(ViewBag.Product.GiaBan, "{0:#,##0} đ")</strong></p>
+            </div>
+            <hr />
+            <ul class="size-selector">
+                @foreach (var size in ViewBag.SizeSP)
+                {
+                    <li class="size-item">
+                        <input type="radio" id="@size.MaSize" name="size" class="radio" onclick="updateSelectedSize('@size.Size')">
+                        <label for="@size.MaSize" class="size-label">@size.Size</label>
+                    </li>
+                }
+            </ul>
+
+            <!-- Add a hidden input field to store the selected size -->
+            <input type="hidden" id="selectedSize" name="selectedSize" />
+
+
+
+
+            <hr />
+            <div class="product-detail">
+                <h2> Về sản phẩm: </h2>
+                <p>@ViewBag.Product.MoTa</p>
+                <ul>
+                    <li>Màu: <span>@ViewBag.Product.color</span></li>
+                    <li>Trạng thái: <span>@ViewBag.TenTrangThai.TenTT</span></li>
+                    <li>Category: <span>Shoes</span></li>
+                </ul>
+            </div>
+
+            <div class="purchase-info">
+                <a href="@Url.Action("ThemGioHang","Cart", new { ms = @ViewBag.Product.MaSP, url = Request.Url.ToString() }) " class="btn" id="addToCartBtn" onclick="setSelectedSize()">
+                    Add to Cart <i class="fas fa-shopping-cart"></i>
+                </a>
+                <a href="@Url.Action("BuyNow", "Cart", new { ms = @ViewBag.Product.MaSP,url = Request.Url.ToString() })" class="btn" id="buyNowBtn" onclick="setSelectedSize()">
+                    Buy Now <i class="fa fa-money"></i>
+                </a>
+                <input type="hidden" id="selectedSize" name="selectedSize" />
+
+                <a href="@Url.Action("AddWishList","WishList", new { ms = @ViewBag.Product.MaSP, url = Request.Url.ToString() }) " class="btn" type="button">
+                    <i class="fas fa-heart"></i>
+                </a>
+
+
+            </div>
+
+            <div class="social-links">
+                <a href="#">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="#">
+                    <i class="fab fa-pinterest"></i>
+                </a>
+                <a class="border d-inline-block" data-fancybox="gallery" href="https://chart.googleapis.com/chart?chs=300x300&amp;cht=qr&amp;chld=H|1&amp;choe=UTF-8&amp;chl=https://kingshoes.vn/air-force-1-se-cz0270-102-chinh-hang-gia-tot-den-king-shoes.html">
+                    <img src="https://chart.googleapis.com/chart?chs=300x300&amp;cht=qr&amp;chld=H|1&amp;choe=UTF-8&amp;chl=https://kingshoes.vn/air-force-1-se-cz0270-102-chinh-hang-gia-tot-den-king-shoes.html" alt="AIR FORCE 1 SE" title="AIR FORCE 1 SE" loading="lazy" width="90">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    function updateSelectedSize(size) {
+        document.getElementById('selectedSize').value = size;
+    }
+
+    // JavaScript function to set the selected size before adding to the cart
+    function setSelectedSize() {
+        var selectedSize = document.getElementById('selectedSize').value;
+
+        if (selectedSize) {
+            // Update 'addToCartBtn' href
+            document.getElementById('addToCartBtn').href += '&selectedSize=' + selectedSize;
+
+            // Update 'buyNowBtn' href
+            document.getElementById('buyNowBtn').href += '&selectedSize=' + selectedSize;
+        } else {
+            alert('Vui lòng chọn size.');
+        }
+    }
+</script>
